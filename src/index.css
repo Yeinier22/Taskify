@@ -1,0 +1,9 @@
+@import "tailwindcss";
+
+:root {
+  /* Mantén solo lo que aporta valor extra */
+  color-scheme: light dark;                 /* (opcional) */
+  -webkit-font-smoothing: antialiased;      /* (opcional) */
+  -moz-osx-font-smoothing: grayscale;       /* (opcional) */
+}
+
