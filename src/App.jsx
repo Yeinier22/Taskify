@@ -3,6 +3,7 @@ import { Routes, Route, Navigate } from "react-router-dom";
 import { useEffect, useState } from "react";
 import { onAuthStateChanged } from "firebase/auth";
 import { auth } from "./services/firebase";
+import Layout from "./components/Layout";
 
 import Register from "./pages/Register";
 import Dashboard from "./pages/Dashboard";
@@ -27,7 +28,15 @@ function App() {
     <Routes>
       <Route
         path="/"
-        element={user ? <Dashboard /> : <Navigate to="/login" />}
+        element={
+          user ? (
+            <Layout>
+              <Dashboard />
+            </Layout>
+          ) : (
+            <Navigate to="/login" />
+          )
+        }
       />
       <Route path="/login" element={!user ? <Login /> : <Navigate to="/" />} />
       <Route

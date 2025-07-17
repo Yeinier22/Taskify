@@ -8,7 +8,6 @@ export default function Dashboard() {
   const { tasks, addTask, toggleTask, deleteTask } = useTask(user?.uid);
 
   const [newTitle, setNewTitle] = useState("");
-  const [loadingLogout, setLoadingLogout] = useState(false);
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -16,26 +15,16 @@ export default function Dashboard() {
     setNewTitle("");
   };
 
-  const handleLogout = async () => {
-    try {
-      setLoadingLogout(true);
-      await logout(); // <-- tu función que hace signOut(auth)
-    } finally {
-      setLoadingLogout(false);
-    }
-  };
-
   return (
-    <div className="p-4 max-w-md mx-auto">
+    <div className="bg-white text-gray-900 dark:bg-gray-900 dark:text-white relative p-4 max-w-md mx-auto">
       <header className="flex justify-between items-center mb-4">
         <h2 className="text-xl font-semibold">Hello {user?.email}</h2>
         <button
-          onClick={handleLogout}
-          disabled={loadingLogout}
+          onClick={logout}
           title="Cerrar sesión"
           className="text-sm text-blue-600 hover:underline disabled:opacity-50"
         >
-          {loadingLogout ? "Signing out…" : "Logout"}
+          Logout
         </button>
       </header>
       <form onSubmit={handleSubmit} className="mb-6 flex gap-2">
@@ -58,7 +47,9 @@ export default function Dashboard() {
             />
             <span
               className={
-                t.done ? "line-through text-gray-500" : "text-gray-900"
+                t.done
+                  ? "line-through text-gray-500 dark:text-gray-400"
+                  : "text-gray-900 dark:text-white"
               }
             >
               {t.title}

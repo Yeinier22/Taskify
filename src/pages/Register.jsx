@@ -2,11 +2,12 @@ import { useState } from "react";
 import { useAuth } from "../context/useAuth";
 import { useNavigate } from "react-router-dom";
 import { EyeIcon, EyeSlashIcon } from "@heroicons/react/24/outline";
+import { Link } from "react-router-dom";
 
 export default function Register() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const { register: registerUser  } = useAuth();
+  const { register: registerUser } = useAuth();
   const [error, setError] = useState("");
   const [showPassword, setShowPassword] = useState(false);
   const navigate = useNavigate();
@@ -21,7 +22,6 @@ export default function Register() {
       setError("Registration failed");
     }
   };
-
 
   return (
     <div className="form-container max-w-sm mx-auto mt-16 p-6 border rounded">
@@ -49,7 +49,7 @@ export default function Register() {
             onClick={() => setShowPassword(!showPassword)}
             className="absolute top-1/2 right-2 transform -translate-y-1/2"
           >
-             {showPassword ? (
+            {showPassword ? (
               <EyeIcon className="h-5 w-5 text-gray-500" />
             ) : (
               <EyeSlashIcon className="h-5 w-5 text-gray-500" />
@@ -62,6 +62,12 @@ export default function Register() {
         >
           Register
         </button>
+        <p className="text-sm text-center mt-4">
+          Already have an account?{" "}
+          <Link to="/login" className="text-blue-600 hover:underline">
+            Login
+          </Link>
+        </p>
         {error && <p className="error text-red-600 text-sm">{error}</p>}
       </form>
     </div>

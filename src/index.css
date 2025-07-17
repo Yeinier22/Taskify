@@ -1,4 +1,7 @@
 @import "tailwindcss";
+@custom-variant dark (&:where(.dark, .dark *));
+
+
 
 :root {
   /* Mantén solo lo que aporta valor extra */
