@@ -22,3 +22,9 @@ dist-ssr
 *.njsproj
 *.sln
 *.sw?
+
+# Office & temporary files
+# Ignore Word documents and lock/temp files
+*.docx
+~$*
+*.tmp
