@@ -65,5 +65,12 @@ export function useTask(uid) {
     await deleteDoc(ref);
   }
 
-  return { tasks, addTask, toggleTask, deleteTask };
+    // ---- UPDATE TITLE --------------------------------------------------
+  async function updateTaskTitle(taskId, newTitle) {
+    if (!uid || !newTitle.trim()) return;
+    const ref = doc(db, "users", uid, "task", taskId);
+    await updateDoc(ref, { title: newTitle.trim() });
+  }
+
+  return { tasks, addTask, toggleTask, deleteTask, updateTaskTitle };
 }

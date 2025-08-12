@@ -5,9 +5,11 @@ import { TrashIcon } from "@heroicons/react/24/solid";
 
 export default function Dashboard() {
   const { user, logout } = useAuth();
-  const { tasks, addTask, toggleTask, deleteTask } = useTask(user?.uid);
+  const { tasks, addTask, toggleTask, deleteTask, updateTaskTitle } = useTask(user?.uid);
 
   const [newTitle, setNewTitle] = useState("");
+  const [editingId, setEditingId] = useState(null);
+  const [editingValue, setEditingValue] = useState("");
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -45,15 +47,46 @@ export default function Dashboard() {
               onChange={() => toggleTask(t)}
               className="h-4 w-4 accent-blue-600 cursor-pointer"
             />
-            <span
-              className={
-                t.done
-                  ? "line-through text-gray-500 dark:text-gray-400"
-                  : "text-gray-900 dark:text-white"
-              }
-            >
-              {t.title}
-            </span>
+           {editingId === t.id ? (
+              <input
+                className="flex-1 border p-1 rounded bg-transparent text-inherit"
+                value={editingValue}
+                autoFocus
+                onChange={e => setEditingValue(e.target.value)}
+                onBlur={async () => {
+                  if (editingValue.trim() && editingValue !== t.title) {
+                    await updateTaskTitle(t.id, editingValue);
+                  }
+                  setEditingId(null);
+                }}
+                onKeyDown={async e => {
+                  if (e.key === "Enter") {
+                    if (editingValue.trim() && editingValue !== t.title) {
+                      await updateTaskTitle(t.id, editingValue);
+                    }
+                    setEditingId(null);
+                  } else if (e.key === "Escape") {
+                    setEditingId(null);
+                  }
+                }}
+              />
+            ) : (
+              <span
+                className={
+                  t.done
+                    ? "line-through text-gray-500 dark:text-gray-400"
+                    : "text-gray-900 dark:text-white"
+                }
+                onClick={() => {
+                  setEditingId(t.id);
+                  setEditingValue(t.title);
+                }}
+                title="Click to edit"
+                style={{ cursor: "pointer" }}
+              >
+                {t.title}
+              </span>
+            )}
             <button
               onClick={() => {
                 if (confirm("¿Delete this task?")) deleteTask(t.id);
