@@ -8,6 +8,8 @@ import {
   deleteDoc,
   doc,
   serverTimestamp,
+  arrayUnion,
+  arrayRemove,
 } from "firebase/firestore";
 import { db } from "../services/firebase";
 import { useState } from "react";
@@ -47,6 +49,8 @@ export function useTask(uid) {
     await addDoc(collection(db, "users", uid, "task"), {
       title: title.trim(),
       done: false,
+  priority: "medium", // low | medium | high
+  tags: [],
       created: serverTimestamp(),
     });
   }
@@ -72,5 +76,41 @@ export function useTask(uid) {
     await updateDoc(ref, { title: newTitle.trim() });
   }
 
-  return { tasks, addTask, toggleTask, deleteTask, updateTaskTitle };
+  // ---- UPDATE PRIORITY ------------------------------------------------
+  const PRIORITIES = ["low", "medium", "high"];
+  async function updateTaskPriority(taskId, priority) {
+    if (!uid) return;
+    const p = String(priority || "").toLowerCase();
+    if (!PRIORITIES.includes(p)) return;
+    const ref = doc(db, "users", uid, "task", taskId);
+    await updateDoc(ref, { priority: p });
+  }
+
+  // ---- TAGS (ADD / REMOVE) -------------------------------------------
+  async function addTag(taskId, tag) {
+    if (!uid) return;
+    const t = String(tag || "").trim();
+    if (!t) return;
+    const ref = doc(db, "users", uid, "task", taskId);
+    await updateDoc(ref, { tags: arrayUnion(t) });
+  }
+
+  async function removeTag(taskId, tag) {
+    if (!uid) return;
+    const t = String(tag || "").trim();
+    if (!t) return;
+    const ref = doc(db, "users", uid, "task", taskId);
+    await updateDoc(ref, { tags: arrayRemove(t) });
+  }
+
+  return {
+    tasks,
+    addTask,
+    toggleTask,
+    deleteTask,
+    updateTaskTitle,
+    updateTaskPriority,
+    addTag,
+    removeTag,
+  };
 }
